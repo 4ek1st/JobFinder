@@ -1,0 +1,44 @@
+<UserControl x:Class="JobFinder.JobDetailPane" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:JobFinder">
+ <Border x:Name="DetailSurface" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource BorderSoft}" BorderThickness="1" CornerRadius="14">
+  <Grid>
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <DockPanel Margin="22,15,14,12">
+    <Button x:Name="BackButton" DockPanel.Dock="Left" Content="{Binding Ui[BackToList]}" Command="{Binding DataContext.CloseDetailsCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource Quiet}" Padding="0,8,12,8" Visibility="Collapsed"/>
+    <Button x:Name="DetailClose" DockPanel.Dock="Right" Command="{Binding DataContext.CloseDetailsCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource Quiet}" Padding="8" AutomationProperties.Name="{Binding Ui[CloseDetails]}" ToolTip="{Binding Ui[CloseDetails]}"><local:FluentIcon Kind="dismiss" Width="19" Height="19"/></Button>
+    <TextBlock Text="{Binding Ui[JobDetails]}" Foreground="{DynamicResource TextMuted}" FontSize="13" VerticalAlignment="Center"/>
+   </DockPanel>
+   <ScrollViewer x:Name="DescriptionScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="22,0,18,18">
+    <StackPanel>
+     <Grid Margin="0,2,0,17"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <local:CompanyLogo Url="{Binding Job.LogoUrl}" Company="{Binding Job.Company}" Loader="{Binding Job.LogoLoader}" Margin="0,0,13,0"/>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Job.Company}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Job.Location}" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource TextBody}" Margin="0,4,0,0"/></StackPanel>
+     </Grid>
+     <TextBlock Text="{Binding Job.Title}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" LineHeight="29" Margin="0,0,0,14"/>
+     <WrapPanel Margin="0,0,0,10"><Border Background="{Binding Job.KindColor}" CornerRadius="5" Padding="8,4" Margin="0,0,8,6"><TextBlock Text="{Binding Job.Kind}" Foreground="{DynamicResource KindText}" FontSize="12"/></Border><Border Background="{Binding Job.SourceColor}" CornerRadius="5" Padding="8,4" Margin="0,0,0,6"><TextBlock Text="{Binding Job.Source}" Foreground="{Binding Job.SourceTextColor}" FontSize="12"/></Border></WrapPanel>
+     <TextBlock Text="{Binding Job.Details}" Foreground="{DynamicResource TextBody}" FontSize="13" TextWrapping="Wrap" LineHeight="20" Margin="0,0,0,14" Visibility="{Binding Job.HasDetails, Converter={StaticResource Visible}}"/>
+     <Border BorderBrush="{DynamicResource BorderSoft}" BorderThickness="0,1,0,0" Margin="0,0,0,18"/>
+     <StackPanel Visibility="{Binding IsBusy, Converter={StaticResource Visible}}" Margin="0,6,0,20"><ProgressBar IsIndeterminate="True" Width="110" HorizontalAlignment="Left"/><TextBlock Text="{Binding Ui[DetailsLoading]}" Foreground="{DynamicResource TextMuted}" TextWrapping="Wrap" Margin="0,13,0,0" AutomationProperties.LiveSetting="Polite"/></StackPanel>
+     <Border Background="{DynamicResource WarningBackground}" CornerRadius="8" Padding="13" Visibility="{Binding HasError, Converter={StaticResource Visible}}" Margin="0,0,0,18"><StackPanel><TextBlock Text="{Binding ErrorText}" Foreground="{DynamicResource WarningText}" TextWrapping="Wrap"/><Button Content="{Binding RetryLabel}" Command="{Binding DataContext.ReloadDetailsCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource Quiet}" HorizontalAlignment="Left" Margin="0,8,0,0"/></StackPanel></Border>
+     <TextBlock Text="{Binding Ui[NoDescription]}" Foreground="{DynamicResource TextMuted}" TextWrapping="Wrap" Visibility="{Binding ShowEmptyDescription, Converter={StaticResource Visible}}" Margin="0,0,0,16"/>
+     <ItemsControl ItemsSource="{Binding Blocks}"><ItemsControl.ItemTemplate><DataTemplate>
+      <TextBlock TextWrapping="Wrap" LineHeight="23"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="{Binding Text}"/><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="{DynamicResource TextBody}"/><Setter Property="Margin" Value="0,0,0,13"/><Style.Triggers><DataTrigger Binding="{Binding Kind}" Value="heading"><Setter Property="FontSize" Value="17"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/><Setter Property="Margin" Value="0,12,0,10"/></DataTrigger><DataTrigger Binding="{Binding Kind}" Value="bullet"><Setter Property="Margin" Value="13,0,0,10"/><Setter Property="Text" Value="{Binding Text, StringFormat=• {0}}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+     </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+     <Border BorderBrush="{DynamicResource BorderSoft}" BorderThickness="0,1,0,0" Margin="0,12,0,20"/>
+     <TextBlock Text="{Binding Ui[Contacts]}" FontSize="17" FontWeight="SemiBold" Margin="0,0,0,12"/>
+     <ItemsControl ItemsSource="{Binding Contacts}"><ItemsControl.ItemTemplate><DataTemplate><Border Background="{DynamicResource FieldBackground}" CornerRadius="8" Padding="11" Margin="0,0,0,8"><DockPanel>
+      <Button DockPanel.Dock="Right" Content="{Binding DataContext.Ui[Copy], RelativeSource={RelativeSource AncestorType=Window}}" Command="{Binding DataContext.CopyContactCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Style="{StaticResource Quiet}" Padding="7" FontSize="12"/>
+      <TextBlock Text="{Binding Value}" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource TextBody}" Margin="0,0,8,0"/>
+     </DockPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+     <TextBlock Text="{Binding NoContactsText}" Foreground="{DynamicResource TextMuted}" TextWrapping="Wrap" LineHeight="22" Visibility="{Binding ShowNoContacts, Converter={StaticResource Visible}}"/>
+     <TextBlock Text="{Binding Snapshot}" Foreground="{DynamicResource TextMuted}" FontSize="11" TextWrapping="Wrap" Margin="0,20,0,0"/>
+    </StackPanel>
+   </ScrollViewer>
+   <Border Grid.Row="2" BorderBrush="{DynamicResource BorderSoft}" BorderThickness="0,1,0,0" Padding="18,14">
+    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+     <Button Content="{Binding Job.BookmarkText}" Command="{Binding DataContext.BookmarkCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding Job}" MinHeight="44" Padding="10"/>
+     <Button Grid.Column="2" Content="{Binding Ui[OriginalShort]}" Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding Job}" Style="{StaticResource Primary}" MinHeight="44" Padding="10"/>
+    </Grid>
+   </Border>
+  </Grid>
+ </Border>
+</UserControl>
