@@ -4,7 +4,8 @@ param(
     [string]$VerificationDirectory,
     [switch]$UseExistingBuild,
     [switch]$PrepareOnly,
-    [switch]$PublishPrepared
+    [switch]$PublishPrepared,
+    [switch]$ResumeDraft
 )
 $ErrorActionPreference = 'Stop'
 $publisherRoot = [IO.Path]::GetFullPath($PSScriptRoot)
@@ -143,24 +144,47 @@ if ($LASTEXITCODE -ne 0) {
 & git -C $publisherRoot push -u origin main
 if ($LASTEXITCODE -ne 0) { throw 'Source push failed.' }
 $tag = 'v' + $Version
-& git -C $publisherRoot tag -a $tag -m ('JobFinder ' + $Version)
-if ($LASTEXITCODE -ne 0) { throw 'Tag creation failed.' }
+if ($ResumeDraft) {
+    if (!$PublishPrepared) { throw 'Resume only a reviewed prepared draft.' }
+    & git -C $publisherRoot diff --exit-code $tag HEAD -- JobFinder JobFinder.Core Directory.Build.props
+    if ($LASTEXITCODE -ne 0) { throw 'An existing draft tag cannot be resumed after changing application code.' }
+} else {
+    & git -C $publisherRoot tag -a $tag -m ('JobFinder ' + $Version)
+    if ($LASTEXITCODE -ne 0) { throw 'Tag creation failed.' }
+}
 & git -C $publisherRoot push origin $tag
 if ($LASTEXITCODE -ne 0) { throw 'Tag push failed.' }
 $assets = @($package,$sourceArchive,$manifestPath,(Join-Path $releaseDirectory 'update-manifest.sig'),(Join-Path $releaseDirectory 'SHA256SUMS.txt'))
-& gh release create $tag @assets --repo $repository --draft --verify-tag --title ('JobFinder ' + $Version) --notes-file $notesPath
+if ($ResumeDraft) {
+    $draft = & gh release view $tag --repo $repository --json databaseId,isDraft,tagName,url | ConvertFrom-Json
+    if ($LASTEXITCODE -ne 0 -or !$draft.isDraft -or $draft.tagName -cne $tag) { throw 'Only an existing unpublished draft may be resumed.' }
+    & gh release upload $tag @assets --repo $repository --clobber
+} else {
+    & gh release create $tag @assets --repo $repository --draft --verify-tag --title ('JobFinder ' + $Version) --notes-file $notesPath
+}
 if ($LASTEXITCODE -ne 0) { throw 'Draft release upload failed.' }
-$snapshotJson = & gh api ('repos/' + $repository + '/releases/tags/' + $tag)
+$draft = & gh release view $tag --repo $repository --json databaseId,isDraft,tagName,url | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0 -or !$draft.isDraft -or $draft.tagName -cne $tag) { throw 'Draft release identity verification failed.' }
+$snapshotJson = & gh api ('repos/' + $repository + '/releases/' + $draft.databaseId)
 if ($LASTEXITCODE -ne 0) { throw 'Draft release read-back failed.' }
 $snapshot = $snapshotJson | ConvertFrom-Json
-if (!$snapshot.draft -or $snapshot.assets.Count -ne $assets.Count -or $snapshot.html_url -cne ('https://github.com/' + $repository + '/releases/tag/' + $tag)) { throw 'Draft release asset verification failed.' }
+$draftUri = [Uri]$snapshot.html_url
+$draftSlug = $draftUri.Segments[-1]
+if (!$snapshot.draft -or $snapshot.tag_name -cne $tag -or $snapshot.assets.Count -ne $assets.Count -or $draftUri.Scheme -cne 'https' -or $draftUri.Host -cne 'github.com' -or $draftUri.UserInfo -or $draftUri.Query -or $draftUri.Fragment -or $draftUri.AbsolutePath -cne ('/' + $repository + '/releases/tag/' + $draftSlug) -or ($draftSlug -cne $tag -and $draftSlug -cnotmatch '^untagged-[a-f0-9]+$')) { throw 'Draft release asset verification failed.' }
 $seenAssets = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 foreach ($asset in $snapshot.assets) {
     $localAsset = $assets | Where-Object {[IO.Path]::GetFileName($_) -ceq $asset.name}
-    if (!$seenAssets.Add($asset.name) -or !$localAsset -or $asset.state -cne 'uploaded' -or (Get-Item -LiteralPath $localAsset).Length -ne $asset.size -or $asset.browser_download_url -cne ('https://github.com/' + $repository + '/releases/download/' + $tag + '/' + $asset.name)) { throw ('Uploaded asset mismatch: ' + $asset.name) }
+    if (!$seenAssets.Add($asset.name) -or !$localAsset -or $asset.state -cne 'uploaded' -or (Get-Item -LiteralPath $localAsset).Length -ne $asset.size -or $asset.browser_download_url -cne ('https://github.com/' + $repository + '/releases/download/' + $draftSlug + '/' + $asset.name)) { throw ('Uploaded asset mismatch: ' + $asset.name) }
     if (!$asset.digest -or $asset.digest -ne ('sha256:' + (Get-FileHash -LiteralPath $localAsset -Algorithm SHA256).Hash.ToLowerInvariant())) { throw ('Uploaded asset digest mismatch: ' + $asset.name) }
 }
 & gh release edit $tag --repo $repository --draft=false --latest
 if ($LASTEXITCODE -ne 0) { throw 'Stable release publication failed; draft remains recoverable.' }
+$stableJson = & gh api ('repos/' + $repository + '/releases/' + $draft.databaseId)
+if ($LASTEXITCODE -ne 0) { throw 'Stable release read-back failed.' }
+$stable = $stableJson | ConvertFrom-Json
+if ($stable.draft -or $stable.prerelease -or $stable.tag_name -cne $tag -or $stable.html_url -cne ('https://github.com/' + $repository + '/releases/tag/' + $tag)) { throw 'Stable release identity verification failed.' }
+foreach ($asset in $stable.assets) {
+    if ($asset.browser_download_url -cne ('https://github.com/' + $repository + '/releases/download/' + $tag + '/' + $asset.name)) { throw 'Stable asset URL does not match the updater contract.' }
+}
 & gh release view $tag --repo $repository --json url,tagName,isDraft,assets
 if ($LASTEXITCODE -ne 0) { throw 'Read back the published release before reporting completion.' }
