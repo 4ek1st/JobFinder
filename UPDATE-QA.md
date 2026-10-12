@@ -16,7 +16,7 @@ Portable reports and selected WPF renders are in `verification`. Offers/progress
 
 The first usable stable update release is v0.5.1; the initial v0.5.0 internet proof exposed a current CDN path mismatch before user installation. A real 0.4.1 bootstrap was built solely for isolated verification. After publication, `--verify-github-update` in an empty isolated installation exercises the production anonymous client, actual caption command, hidden helper, replacement EXE and new visible WPF window acknowledgement. The proof compares favorites, saved searches, applied query, separate draft, source choices, language/theme and window bounds. It never reads the user's profile.
 
-At this initial source snapshot the remote proof is pending publication. The completed, sanitized result will be attached to the release and this document updated on main. No simulated transport or invented public version is treated as an Internet update.
+The production anonymous client completed a real 0.4.1 to 0.5.1 update through the actual WPF caption command. The hidden helper installed the signed package, a new loaded visible WPF window acknowledged startup, and the helper committed the transaction. Favorites/search hashes, applied query, separate draft, source choices, tab/sort, theme/language and window dimensions matched before/after. The on-disk EXE matches the signed hash and the latest-version caption is hidden. The sanitized result is attached to v0.5.1 as public-update-verification-0.5.1.json. No simulated transport or invented public version is treated as an Internet update.
 
 ## Integrity and privacy
 
