@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/4ek1st/JobFinder/releases/latest/download/JobFinder-portable-win-x64.zip">
-    <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/download.svg" alt="JobFinder für Windows herunterladen" width="306" height="60">
+    <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/download.svg" alt="JobFinder für Windows herunterladen" width="340" height="60">
   </a>
   <br><sub>Windows 10 / 11 (64 Bit) · Deutsch / Russisch · Ohne Installation</sub>
 </p>
