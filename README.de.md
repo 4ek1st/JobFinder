@@ -26,7 +26,7 @@ Klicke auf eine Stellenkarte. Rechts erscheinen die Beschreibung, Anforderungen,
 
 Wenn du mit der Maus über eine Karte fährst, erscheinen **„Merken“** und **„Original“**. Beide Aktionen sind auch in der Stellenbeschreibung verfügbar. **„Original“** öffnet die Anzeige auf der Website, auf der du dich bewerben kannst.
 
-Gemerkte Stellen findest du unter **„Favoriten“**. Sie bleiben nach dem Schließen der App gespeichert. Bereits geladene Beschreibungen deiner Favoriten kannst du auch ohne Internet lesen.
+Gemerkte Stellen findest du auf der **„Merkliste“**. Sie bleiben nach dem Schließen der App gespeichert. Bereits geladene Beschreibungen deiner Favoriten kannst du auch ohne Internet lesen.
 
 ## Quellenstatus prüfen
 
