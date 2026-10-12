@@ -20,6 +20,7 @@ public partial class App
         check(window.SearchSurface.IsVisible && !window.CompactSearchBar.IsVisible, "Before a first search, the full search form is available");
         vm.ApplyQuery(new("Fachinformatiker", "Berlin", 25, JobKind.Apprenticeship)); await vm.SearchAsync(); await SettleAsync();
         check(!window.SearchSurface.IsVisible && window.EditSearchButton.IsVisible && window.ResultSourcesButton.IsVisible, "A new search collapses the form while editing and filters remain accessible");
+        check(!VisualChildren<TextBlock>(window.CoverageBand).Any(text => text.Text == vm.SourceBrief), "Source coverage belongs in settings instead of occupying the vacancy feed after a search");
         window.JobList.SelectedItem = vm.VisibleJobs[0]; await vm.DetailTask; await SettleAsync();
         await RenderAsync(window, Path.Combine(output, "JobFinder-031-compact-dark.png"), 1536, 1024);
         window.FeedScroll!.ScrollToVerticalOffset(180); window.DetailPane.Scroll.ScrollToVerticalOffset(160); await SettleAsync();

@@ -179,6 +179,7 @@ public partial class App : Application
         await VerifyDetailsAsync(output, fixtures, isolated, Check);
         await VerifyCompactSearchAsync(output, fixtures, isolated, Check);
         await VerifySourceDirectoryAsync(output, isolated, Check);
+        await VerifySourceStatusAsync(output, fixtures, isolated, Check);
         await VerifyUpdateUiAsync(output, isolated, Check);
         await VerifyPaginationAsync(output, isolated, fixedSources[0], Check);
         // Delayed sources deliberately ignore cancellation to prove generation protection.

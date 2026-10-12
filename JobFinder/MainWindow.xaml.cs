@@ -220,11 +220,13 @@ public partial class MainWindow : ThemedWindow
         panel.Children.Add(save); dialog.Content = new ScrollViewer { Content = panel, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; dialog.Loaded += (_, _) => title.Focus(); return dialog;
     }
     private void OnSources(object sender, RoutedEventArgs e) => CreateSourcesDialog().ShowDialog();
-    internal ThemedWindow CreateSourcesDialog()
+    private void OnSourceStatus(object sender, RoutedEventArgs e) => CreateSourcesDialog(statusView: true).ShowDialog();
+    internal ThemedWindow CreateSourcesDialog(bool statusView = false)
     {
-        var dialog = NewDialog(Vm.Ui["Filters"], 760, 800);
-        dialog.SetBinding(Window.TitleProperty, new System.Windows.Data.Binding("[Filters]") { Source = Vm.Ui });
-        dialog.Content = new SourceDirectory(Vm, (DataTemplate)FindResource("SourceTemplate"), (DataTemplate)FindResource("RadiusItem"));
+        string title = statusView ? "SourceStatus" : "Filters";
+        var dialog = NewDialog(Vm.Ui[title], 760, statusView ? 720 : 800);
+        dialog.SetBinding(Window.TitleProperty, new System.Windows.Data.Binding("[" + title + "]") { Source = Vm.Ui });
+        dialog.Content = new SourceDirectory(Vm, (DataTemplate)FindResource("SourceTemplate"), (DataTemplate)FindResource("RadiusItem"), statusView);
         return dialog;
     }
     private void OnAppMenu(object sender, RoutedEventArgs e)
@@ -233,7 +235,11 @@ public partial class MainWindow : ThemedWindow
     }
     internal ContextMenu CreateAppMenu()
     {
-        var menu = new ContextMenu(); var filters = new MenuItem { Header = Vm.Ui["Filters"] }; filters.Click += OnSources; menu.Items.Add(filters);
+        var menu = new ContextMenu();
+        var status = new MenuItem { Tag = "source-status" }; status.SetBinding(HeaderedItemsControl.HeaderProperty, new System.Windows.Data.Binding(nameof(ViewModel.SourceStatusMenuLabel)) { Source = Vm });
+        var dot = new System.Windows.Shapes.Ellipse { Width = 8, Height = 8 }; dot.SetResourceReference(System.Windows.Shapes.Shape.FillProperty, "WarningDot"); dot.SetBinding(VisibilityProperty, new System.Windows.Data.Binding(nameof(ViewModel.ShowSourceAttention)) { Source = Vm, Converter = (System.Windows.Data.IValueConverter)FindResource("Visible") }); status.Icon = dot;
+        status.Click += OnSourceStatus; menu.Items.Add(status); menu.Items.Add(new Separator());
+        var filters = new MenuItem { Header = Vm.Ui["Filters"] }; filters.Click += OnSources; menu.Items.Add(filters);
         var searches = new MenuItem { Header = Vm.Ui["SavedQueries"] }; searches.Click += OnSavedQueries; menu.Items.Add(searches);
         var about = new MenuItem { Header = Vm.Ui["About"] }; about.Click += OnAbout; menu.Items.Add(about);
         var add = new MenuItem { Header = Vm.Ui["AddLink"] }; add.Click += OnAddLink; menu.Items.Add(add);

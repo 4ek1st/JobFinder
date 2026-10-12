@@ -14,11 +14,7 @@
   <br><sub>Windows 10 / 11 · Русский / Deutsch · Без установки</sub>
 </p>
 
-<p align="center">
-  <a href="https://github.com/4ek1st/JobFinder/releases/latest">Что нового</a> · <a href="README.ru.md">Как пользоваться</a>
-</p>
-
-<br>
+<p align="center"><sub>Как выглядит JobFinder</sub></p>
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/app-light.png">
@@ -26,7 +22,9 @@
   <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/app-dark.png" alt="JobFinder: список вакансий слева и подробное описание выбранного предложения справа." width="100%">
 </picture>
 
-<br>
+<p align="center">
+  <a href="https://github.com/4ek1st/JobFinder/releases/latest">Что нового</a> · <a href="README.ru.md">Как пользоваться</a>
+</p>
 
 ## Меньше вкладок, больше подходящих предложений
 

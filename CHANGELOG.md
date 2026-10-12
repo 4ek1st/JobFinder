@@ -1,3 +1,10 @@
+# JobFinder 0.5.2 — 2026-10-12
+
+- Больше места вакансиям: информация об охвате и предупреждения источников перенесены в «Настройки → Состояние источников».
+- Жёлтая точка у шестерёнки появляется при проблеме. В настройках видны причина и возможность повтора; после успешного ответа точка исчезает.
+- Повторная загрузка и её отмена сохраняют уже найденные вакансии. Ошибки отключённых источников не вызывают предупреждение.
+- Новая страница программы на GitHub: баннер, скриншот, кнопка скачивания и краткое руководство.
+
 # JobFinder 0.5.1 — 2026-10-12
 
 - Fixed the production GitHub CDN path `/github-production-release-asset/`, discovered during the anonymous public update proof. The older CDN format remains supported; HTTPS host, signed metadata, length and hashes remain enforced.

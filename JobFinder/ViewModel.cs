@@ -41,11 +41,12 @@ public sealed class SourceView(IJobSource source, Ui ui) : Observable
     public int EmptyPages { get; set; }
     public bool ScanLimited { get; set; }
     public bool LimitedCoverage { get; set; }
+    public bool RetryingProblem { get; set; }
     public DateTimeOffset? RetryAt { get; set; }
     public bool HasError => State is "Network" or "Timeout" or "Access" or "RateLimit" or "Format" or "Input";
     public string Status => ui[ScanLimited ? "SourceScanLimit" : PaginationStopped ? "RepeatedPage" : State == "Input" && Id == "stellenanzeigen" ? "InputCity" : State == "Input" && Id == "handwerk" ? "InputPostcode" : State];
-    public bool NeedsAttention => HasError || ScanLimited || PaginationStopped;
-    public bool CanRetry => HasError && State != "Input" || ScanLimited;
+    public bool NeedsAttention => HasError || ScanLimited || PaginationStopped || RetryingProblem;
+    public bool CanRetry => HasError && State != "Input" || ScanLimited || RetryingProblem && State == "Cancelled";
     public string RetryLabel => ui[ScanLimited ? "ContinueSource" : "Retry"];
     public string Coverage => (Pages > 0 ? $"{Found} {ui["Found"]} · {Pages} {ui["Pages"]}" + (LimitedCoverage || Id == "arbeitnow" ? $"\n{ui["Inspected"]}: {Inspected}" : "") : "") + (LimitedCoverage ? $"\n{ui["LimitedSourceCoverage"]}" : "") + (RetryAt.HasValue ? $"\n{ui["Retry"]}: {RetryAt.Value.ToLocalTime():HH:mm}" : "");
     public Brush Tone => ThemeManager.Brush(HasError ? "WarningText" : State == "Loading" ? "Accent" : "TextMuted");
@@ -85,7 +86,7 @@ public sealed class JobView(JobListing job, ViewModel owner) : Observable
 public sealed class FeedStatusView(ViewModel owner) : Observable
 {
     public bool IsBusy => owner.IsBusy;
-    public string Label => owner.IsBusy ? owner.Ui["LoadingMore"] : owner.LoadingExplanation.Length > 0 ? owner.LoadingExplanation : owner.Ui[owner.HasPendingPages ? "ScrollForMore" : owner.Sources.Any(s => s.HasError) ? "Partial" : owner.Sources.Any(s => s.ScanLimited) ? "SourceScanLimit" : owner.Sources.Any(s => s.PaginationStopped) ? "RepeatedPage" : "AllLoaded"];
+    public string Label => owner.IsBusy ? owner.Ui["LoadingMore"] : owner.LoadingExplanation.Length > 0 ? owner.LoadingExplanation : owner.Ui[owner.HasPendingPages ? "ScrollForMore" : "AvailableLoaded"];
 }
 public sealed partial class ViewModel : Observable, IDisposable
 {
@@ -152,7 +153,7 @@ public sealed partial class ViewModel : Observable, IDisposable
     public bool ShowResults { get => !ShowFavorites; set { if (value) ShowFavorites = false; } }
     public int Sort { get => _sort; set { if (Set(ref _sort, value)) RefreshJobs(false); } }
     public string Notice { get => _notice; private set { Set(ref _notice, value); Changed(nameof(ShowNotice)); } }
-    public bool ShowNotice => Notice.Length > 0 && Notice != Ui["Complete"] && Notice != Ui["Ready"] && (!SearchCollapsed || Notice != Ui["Changed"] && Notice != Ui["SourcesChanged"]);
+    public bool ShowNotice => Notice.Length > 0 && Notice != Ui["Complete"] && Notice != Ui["Ready"] && Notice != Ui["Partial"] && (!SearchCollapsed || Notice != Ui["Changed"] && Notice != Ui["SourcesChanged"]);
     public string StorageNotice { get => _storageNotice; private set { Set(ref _storageNotice, value); Changed(nameof(HasStorageNotice)); } }
     public bool HasStorageNotice => StorageNotice.Length > 0;
     public int FavoriteCount => Profile.Favorites.Count;
@@ -162,15 +163,19 @@ public sealed partial class ViewModel : Observable, IDisposable
     {
         get
         {
-            var relevant = Sources.Where(x => x.State is not "Off" and not "Skipped" && x.Source.Supports(_active?.Kind ?? Kind)).ToList();
+            var relevant = Sources.Where(x => x.Enabled && x.State is not "Off" and not "Skipped" && x.Source.Supports(_active?.Kind ?? Kind)).ToList();
             int ok = relevant.Count(x => x.State is "Ok" or "Empty");
             return Ui.IsRu ? $"{ok} из {relevant.Count} источников ответили · Поиск охватывает часть вакансий" : $"{ok} von {relevant.Count} Quellen geladen · Auswahl verfügbarer Stellen";
         }
     }
-    public int SourceAttentionCount => Sources.Count(s => s.Enabled && s.NeedsAttention);
-    public bool ShowSourceAttention => ShowLimit && SourceAttentionCount > 0;
+    public bool HasSourceStatus => _hasSearched;
+    public int SourceAttentionCount => Sources.Count(s => s.Enabled && s.State is not "Off" and not "Skipped" && s.NeedsAttention);
+    public bool ShowSourceAttention => SourceAttentionCount > 0;
     public string SourceAttentionLabel => (Ui.IsRu ? $"Источники требуют внимания: {SourceAttentionCount}" : $"Quellen mit Hinweisen: {SourceAttentionCount}") + " · " + Ui["SourceStatusDetails"];
-    public Brush SourceTone => ThemeManager.Brush(Sources.Any(x => x.HasError) ? "WarningText" : "TextMuted");
+    public string SettingsLabel => Ui["Settings"] + (ShowSourceAttention ? " · " + string.Format(Ui["SourceAttentionSummary"], SourceAttentionCount) : "");
+    public string SourceStatusMenuLabel => Ui["SourceStatus"] + (ShowSourceAttention ? $" · {SourceAttentionCount}" : "");
+    public string SourceStatusTitle => !_hasSearched ? Ui["SourceStatusWaiting"] : ShowSourceAttention ? string.Format(Ui["SourceAttentionSummary"], SourceAttentionCount) : IsBusy ? Ui["Searching"] : !Sources.Any(s => s.Enabled && s.State is not "Off" and not "Skipped") ? Ui["NoSources"] : Sources.Any(s => s.Enabled && s.State == "Cancelled") ? Ui["Stopped"] : Ui["SourceStatusHealthy"];
+    public Brush SourceTone => ThemeManager.Brush(ShowSourceAttention ? "WarningText" : "TextMuted");
     private bool QueryUnchanged => _active is not null && new SearchQuery(Keyword, City, Radius, Kind).Clean() == _active;
     public bool HasPendingPages => Sources.Any(x => x.Next is not null && x.Enabled && x.Source.Supports(_active?.Kind ?? Kind) && !x.HasError && !x.ScanLimited && x.State != "Off" && x.State != "Skipped");
     public bool HasNext => !ShowFavorites && !IsBusy && !_autoPaused && !_settingsChanged && QueryUnchanged && Sources.Any(x => x.Next is not null && x.Enabled && !x.ScanLimited && x.State is "Ok" or "Empty");
@@ -257,11 +262,11 @@ public sealed partial class ViewModel : Observable, IDisposable
         {
             CloseDetails(); SelectedItem = null;
             _results.Clear(); _active = query; _hasSearched = true; _autoPaused = false; _settingsChanged = false; _activeSources = Sources.Where(s => s.Enabled).Select(s => s.Id).ToHashSet();
-            foreach (var s in Sources) { s.Found = 0; s.Inspected = 0; s.Pages = 0; s.EmptyPages = 0; s.ScanLimited = false; s.LimitedCoverage = false; s.Next = null; s.CompletedRequests.Clear(); s.PaginationStopped = false; s.RetryAt = null; s.State = !s.Enabled ? "Off" : !s.Source.Supports(query.Kind) ? "Skipped" : "Loading"; s.Refresh(); }
+            foreach (var s in Sources) { s.Found = 0; s.Inspected = 0; s.Pages = 0; s.EmptyPages = 0; s.ScanLimited = false; s.LimitedCoverage = false; s.RetryingProblem = false; s.Next = null; s.CompletedRequests.Clear(); s.PaginationStopped = false; s.RetryAt = null; s.State = !s.Enabled ? "Off" : !s.Source.Supports(query.Kind) ? "Skipped" : "Loading"; s.Refresh(); }
             SearchExpanded = false;
         }
         if (!more) { ShowFavorites = false; _autoPaused = false; }
-        if (retry is not null) { var source = selected[0]; source.ScanLimited = false; source.EmptyPages = 0; }
+        if (retry is not null) { var source = selected[0]; source.RetryingProblem = source.NeedsAttention; source.ScanLimited = false; source.EmptyPages = 0; }
         foreach (var s in selected) { s.State = "Loading"; s.RetryAt = null; s.Refresh(); }
         Profile.LastQuery = query; Save(); IsBusy = true; Notice = Ui["Searching"]; RefreshJobs(more || retry is not null); Changed(nameof(ActiveLabel));
         var requests = selected.ToDictionary(s => s.Id, s => (more || retry is not null) ? s.Next : null);
@@ -271,6 +276,7 @@ public sealed partial class ViewModel : Observable, IDisposable
             {
                 if (generation != _generation) return;
                 var s = Sources.First(x => x.Id == result.Id);
+                if (!result.Cancelled && !tokenSource.IsCancellationRequested) s.RetryingProblem = false;
                 if (result.Cancelled || tokenSource.IsCancellationRequested) s.State = "Cancelled";
                 else if (result.Failure is not null) { s.State = result.Failure.Kind.ToString(); s.RetryAt = result.Failure.RetryAt; }
                 else if (result.Page is not null)
@@ -292,7 +298,7 @@ public sealed partial class ViewModel : Observable, IDisposable
                 s.Refresh(); RefreshJobs();
             }), tokenSource.Token);
         }
-        catch (Exception e) when (e is not OutOfMemoryException) { if (generation == _generation) foreach (var s in selected.Where(s => s.State == "Loading")) { s.State = tokenSource.IsCancellationRequested ? "Cancelled" : "Network"; s.Refresh(); } }
+        catch (Exception e) when (e is not OutOfMemoryException) { if (generation == _generation) foreach (var s in selected.Where(s => s.State == "Loading")) { s.RetryingProblem = tokenSource.IsCancellationRequested && s.RetryingProblem; s.State = tokenSource.IsCancellationRequested ? "Cancelled" : "Network"; s.Refresh(); } }
         finally
         {
             if (generation == _generation)
@@ -367,7 +373,7 @@ public sealed partial class ViewModel : Observable, IDisposable
         if (!ShowFavorites && _hasSearched && VisibleJobs.Count > 0) desired.Add(_feedStatus);
         Synchronize(FeedItems, desired); _feedStatus.Refresh();
     }
-    private void RefreshState() { Changed(nameof(CountLabel)); Changed(nameof(Empty)); Changed(nameof(HasJobs)); Changed(nameof(ShowExamples)); Changed(nameof(ShowLimit)); Changed(nameof(EmptyTitle)); Changed(nameof(EmptyBody)); Changed(nameof(HasNext)); Changed(nameof(HasPendingPages)); Changed(nameof(CanResume)); Changed(nameof(AutoPaused)); Changed(nameof(LoadingExplanation)); Changed(nameof(ActiveLabel)); Changed(nameof(CompactSearchLabel)); Changed(nameof(HasSearchChanges)); Changed(nameof(SourceBrief)); Changed(nameof(SourceAttentionCount)); Changed(nameof(ShowSourceAttention)); Changed(nameof(SourceAttentionLabel)); Changed(nameof(SourceTone)); Changed(nameof(FilterLabel)); Changed(nameof(SearchLabel)); Changed(nameof(SearchIcon)); Changed(nameof(ThemeLabel)); RefreshFeed(); }
+    private void RefreshState() { Changed(nameof(CountLabel)); Changed(nameof(Empty)); Changed(nameof(HasJobs)); Changed(nameof(ShowExamples)); Changed(nameof(ShowLimit)); Changed(nameof(EmptyTitle)); Changed(nameof(EmptyBody)); Changed(nameof(HasNext)); Changed(nameof(HasPendingPages)); Changed(nameof(CanResume)); Changed(nameof(AutoPaused)); Changed(nameof(LoadingExplanation)); Changed(nameof(ActiveLabel)); Changed(nameof(CompactSearchLabel)); Changed(nameof(HasSearchChanges)); Changed(nameof(SourceBrief)); Changed(nameof(SourceAttentionCount)); Changed(nameof(ShowSourceAttention)); Changed(nameof(SourceAttentionLabel)); Changed(nameof(SourceTone)); Changed(nameof(HasSourceStatus)); Changed(nameof(SettingsLabel)); Changed(nameof(SourceStatusMenuLabel)); Changed(nameof(SourceStatusTitle)); Changed(nameof(FilterLabel)); Changed(nameof(SearchLabel)); Changed(nameof(SearchIcon)); Changed(nameof(ThemeLabel)); RefreshFeed(); }
     public void Open(string url)
     {
         try { if (!Links.IsSafe(url)) throw new ArgumentException(); System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true }); }

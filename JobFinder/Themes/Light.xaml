@@ -17,6 +17,7 @@
  <SolidColorBrush x:Key="ThumbHover" Color="#4D6877"/>
  <SolidColorBrush x:Key="WarningBackground" Color="#FFF3DD"/>
  <SolidColorBrush x:Key="WarningText" Color="#835B24"/>
+ <SolidColorBrush x:Key="WarningDot" Color="#C48716"/>
  <SolidColorBrush x:Key="Error" Color="#B73B38"/>
  <SolidColorBrush x:Key="CloseHover" Color="#C53C49"/>
  <SolidColorBrush x:Key="KindBackground" Color="#EAF5F1"/>
