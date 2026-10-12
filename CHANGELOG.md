@@ -1,10 +1,10 @@
 # JobFinder 0.5.2 — 2026-10-12
 
-- Больше места вакансиям: информация об охвате и предупреждения источников перенесены в «Настройки → Состояние источников».
-- Жёлтая точка у шестерёнки появляется при проблеме. В настройках видны причина и возможность повтора; после успешного ответа точка исчезает.
-- Повторная загрузка и её отмена сохраняют уже найденные вакансии. Ошибки отключённых источников не вызывают предупреждение.
-- Новая страница программы на GitHub: баннер, скриншот, кнопка скачивания и краткое руководство.
-
+- Mehr Platz für Stellen: Hinweise zur Abdeckung und Quellenprobleme stehen jetzt unter „Einstellungen → Quellenstatus“.
+- Ein gelber Punkt am Zahnrad weist auf ein Problem hin. Nach erfolgreichem erneutem Laden verschwindet er.
+- Erneutes Laden und Abbrechen erhalten bereits gefundene Stellen. Deaktivierte Quellen lösen keinen Hinweis aus.
+- Deutsch ist die Standardsprache für neue Installationen. Eine bereits gespeicherte Sprachauswahl bleibt erhalten.
+- Neue GitHub-Seite auf Deutsch mit Banner, Screenshots, Download-Button und Kurzanleitung.
 # JobFinder 0.5.1 — 2026-10-12
 
 - Fixed the production GitHub CDN path `/github-production-release-asset/`, discovered during the anonymous public update proof. The older CDN format remains supported; HTTPS host, signed metadata, length and hashes remain enforced.

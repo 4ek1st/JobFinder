@@ -6,8 +6,8 @@ namespace JobFinder;
 public sealed class Ui : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
-    private string _language = "ru";
-    public string Language { get => _language; set { _language = value == "de" ? "de" : "ru"; PropertyChanged?.Invoke(this, new("Item[]")); PropertyChanged?.Invoke(this, new(nameof(IsRu))); PropertyChanged?.Invoke(this, new(nameof(IsDe))); } }
+    private string _language = "de";
+    public string Language { get => _language; set { _language = value == "ru" ? "ru" : "de"; PropertyChanged?.Invoke(this, new("Item[]")); PropertyChanged?.Invoke(this, new(nameof(IsRu))); PropertyChanged?.Invoke(this, new(nameof(IsDe))); } }
     public bool IsRu => Language == "ru";
     public bool IsDe => !IsRu;
     public static string AppVersion => UpdateViewModel.FormatVersion(typeof(App).Assembly.GetName().Version ?? new Version(0, 4, 1));

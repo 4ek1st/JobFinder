@@ -32,7 +32,7 @@ public sealed class ProfileStore(string directory)
         var profile = JsonSerializer.Deserialize<UserProfile>(File.ReadAllText(file), Json) ?? throw new JsonException();
         if (profile.Schema != 1 || profile.Favorites is null || profile.Searches is null || profile.EnabledSources is null || profile.LastQuery is null) throw new JsonException();
         profile.Favorites = profile.Favorites.Where(j => Links.IsSafe(j.Url) && !string.IsNullOrWhiteSpace(j.Title)).DistinctBy(j => j.Key).ToList();
-        profile.Language = profile.Language == "de" ? "de" : "ru";
+        profile.Language = profile.Language == "ru" ? "ru" : "de";
         profile.Theme = profile.Theme == "light" ? "light" : "dark";
         profile.KnownSourceIds ??= [];
         profile.LastQuery = profile.LastQuery.Clean();

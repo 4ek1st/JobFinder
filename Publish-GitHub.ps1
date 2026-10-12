@@ -33,7 +33,7 @@ if (Test-Path -LiteralPath $releaseDirectory) { throw 'Release preparation alrea
 $packageDirectory = Join-Path $releaseDirectory 'package'
 New-Item -ItemType Directory -Path $packageDirectory -Force | Out-Null
 Copy-Item -LiteralPath $executable -Destination $packageDirectory
-foreach ($name in @('README.md','README.ru.md','CHANGELOG.md','THIRD-PARTY-NOTICES')) { Copy-Item -LiteralPath (Join-Path $publisherRoot $name) -Destination $packageDirectory -Recurse }
+foreach ($name in @('README.md','README.de.md','README.ru.md','CHANGELOG.md','THIRD-PARTY-NOTICES')) { Copy-Item -LiteralPath (Join-Path $publisherRoot $name) -Destination $packageDirectory -Recurse }
 if ($VerificationDirectory) {
     $evidenceDirectory = Join-Path $packageDirectory 'verification'
     New-Item -ItemType Directory -Path $evidenceDirectory -Force | Out-Null
@@ -95,23 +95,24 @@ $sumLines = @()
 foreach ($path in @($package,$sourceArchive,$manifestPath,(Join-Path $releaseDirectory 'update-manifest.sig'))) { $sumLines += (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() + '  ' + [IO.Path]::GetFileName($path) }
 $sumLines | Set-Content -LiteralPath (Join-Path $releaseDirectory 'SHA256SUMS.txt') -Encoding utf8
 $notes = @"
-Работа, практика и Ausbildung в Германии — в одном удобном приложении.
+Jobs, Praktikum und Ausbildung in Deutschland — in einer übersichtlichen Windows-App.
 
-[**Скачать JobFinder для Windows**](https://github.com/$repository/releases/download/v$Version/JobFinder-portable-win-x64.zip)
+[**JobFinder für Windows herunterladen**](https://github.com/$repository/releases/download/v$Version/JobFinder-portable-win-x64.zip)
 
-Windows 10 / 11 · Русский / Deutsch · Без установки
+Windows 10 / 11 (64 Bit) · Deutsch / Russisch · Ohne Installation
 
-- Вакансии из 21 источника в общей ленте и ещё 12 площадок для поиска на их сайтах.
-- Описание выбранной вакансии справа, избранное и ссылка на оригинал.
-- Автоматическая подгрузка предложений при прокрутке.
-- Тёмная и светлая темы.
-- Обновление через значок скачивания справа сверху — с сохранением избранного и настроек.
+- Angebote aus 21 Quellen in einer gemeinsamen Liste sowie 12 weitere Portale mit Suche auf ihrer Website.
+- Stellenbeschreibung direkt rechts, Favoriten und ein Link zur Originalanzeige.
+- Weitere Stellen werden beim Scrollen automatisch geladen.
+- Quellenprobleme unter „Einstellungen → Quellenstatus“; ein gelber Punkt am Zahnrad weist darauf hin.
+- Dunkles und helles Design. Deutsch ist die Standardsprache für neue Installationen.
+- Updates über das Download-Symbol oben rechts. Favoriten und Einstellungen bleiben erhalten.
 
-**Первый запуск:** распакуйте архив в удобную папку и откройте **JobFinder.exe**.
+**Erster Start:** Archiv entpacken und **JobFinder.exe** öffnen.
 
-**Уже пользуетесь JobFinder?** Нажмите значок обновления в программе. Если переносите её вручную, сохраните свою папку **data**.
+**Du nutzt JobFinder bereits?** Klicke auf das Update-Symbol in der App. Beim manuellen Umzug behältst du deinen Ordner **data**.
 
-[Подробнее о программе](https://github.com/$repository) · [Как пользоваться](https://github.com/$repository/blob/main/README.ru.md)
+[Mehr über JobFinder](https://github.com/$repository) · [Kurzanleitung](https://github.com/$repository/blob/main/README.de.md)
 "@
 $notesPath = Join-Path $releaseDirectory 'release-notes.md'
 [IO.File]::WriteAllText($notesPath,$notes,[Text.UTF8Encoding]::new($false))

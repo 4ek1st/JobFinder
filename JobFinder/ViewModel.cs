@@ -236,7 +236,7 @@ public sealed partial class ViewModel : Observable, IDisposable
         OpenCommand = new(p => { if (p is JobView j) Open(j.Job.Url); });
         CopyCommand = new(p => { if (p is JobView j) { try { Clipboard.SetText(j.Job.Url); Notice = Ui["Copied"]; } catch (System.Runtime.InteropServices.ExternalException) { Notice = Ui["OpenError"]; } } });
         PortalCommand = new(p => { if (p is string id) Open(Links.Portal(id, new(Keyword, City, Radius, Kind))); });
-        LanguageCommand = new(p => { Ui.Language = p?.ToString() ?? "ru"; Profile.Language = Ui.Language; Notice = Ui[IsBusy ? "Searching" : "Ready"]; Save(); Refresh(); foreach (var s in Sources) s.Refresh(); Detail?.Refresh(); RefreshJobs(); });
+        LanguageCommand = new(p => { Ui.Language = p?.ToString() ?? "de"; Profile.Language = Ui.Language; Notice = Ui[IsBusy ? "Searching" : "Ready"]; Save(); Refresh(); foreach (var s in Sources) s.Refresh(); Detail?.Refresh(); RefreshJobs(); });
         ExampleCommand = new(p => { ApplyQuery(p?.ToString() switch { "internship" => new("Design", "", 25, JobKind.Internship), "apprenticeship" => new("Fachinformatiker", "", 25, JobKind.Apprenticeship), _ => new("Developer", "", 25, JobKind.Job) }); _ = SearchAsync(); });
         RemoveSearchCommand = new(_ => { if (SelectedSearch is not null) { SavedSearches.Remove(SelectedSearch); Profile.Searches = SavedSearches.ToList(); _selectedSearch = null; Changed(nameof(SelectedSearch)); Save(); } }, _ => SelectedSearch is not null);
     }

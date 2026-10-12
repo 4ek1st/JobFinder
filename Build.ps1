@@ -6,7 +6,7 @@ $version = & $DotNet --version
 if ($LASTEXITCODE -ne 0 -or [int]($version.Split('.')[0]) -lt 10) { throw '.NET SDK 10 or later is required.' }
 & $DotNet publish (Join-Path $buildRoot 'JobFinder\JobFinder.csproj') -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=None -p:DebugSymbols=false -o $targetDir --nologo
 if ($LASTEXITCODE -ne 0) { throw 'Publish failed.' }
-Copy-Item -LiteralPath (Join-Path $buildRoot 'README.ru.md') -Destination $targetDir
+Copy-Item -LiteralPath (Join-Path $buildRoot 'README.de.md') -Destination $targetDir
 Copy-Item -LiteralPath (Join-Path $buildRoot 'THIRD-PARTY-NOTICES') -Destination $targetDir -Recurse -Force
 if ($Verify) {
     $env:JOBFINDER_UPDATE_TEST_DOTNET = (Get-Command $DotNet -ErrorAction Stop).Source

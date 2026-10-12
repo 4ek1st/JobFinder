@@ -1,60 +1,62 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/hero.svg" alt="JobFinder — найдите своё место в Германии. Работа, Praktikum и Ausbildung." width="100%">
+  <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/hero.svg" alt="JobFinder — finde deinen Platz in Deutschland. Jobs, Praktikum und Ausbildung." width="100%">
 </p>
 
 <p align="center">
-  Ищите вакансии, сравнивайте предложения и сохраняйте то, что подходит вам.<br>
-  Всё в одном спокойном и понятном интерфейсе.
+  Stellen entdecken, Angebote vergleichen und passende Möglichkeiten speichern.<br>
+  Alles in einer übersichtlichen App.
 </p>
 
 <p align="center">
   <a href="https://github.com/4ek1st/JobFinder/releases/latest/download/JobFinder-portable-win-x64.zip">
-    <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/download.svg" alt="Скачать JobFinder для Windows" width="306" height="60">
+    <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/download.svg" alt="JobFinder für Windows herunterladen" width="306" height="60">
   </a>
-  <br><sub>Windows 10 / 11 · Русский / Deutsch · Без установки</sub>
+  <br><sub>Windows 10 / 11 (64 Bit) · Deutsch / Russisch · Ohne Installation</sub>
 </p>
 
-<p align="center"><sub>Как выглядит JobFinder</sub></p>
+<p align="center"><sub>So sieht JobFinder aus</sub></p>
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/app-light.png">
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/app-dark.png">
-  <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/app-dark.png" alt="JobFinder: список вакансий слева и подробное описание выбранного предложения справа." width="100%">
+  <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/app-dark.png" alt="JobFinder: Stellenliste links und die ausführliche Beschreibung der ausgewählten Stelle rechts." width="100%">
 </picture>
 
 <p align="center">
-  <a href="https://github.com/4ek1st/JobFinder/releases/latest">Что нового</a> · <a href="README.ru.md">Как пользоваться</a>
+  <a href="https://github.com/4ek1st/JobFinder/releases/latest">Was ist neu?</a> · <a href="README.de.md">Kurzanleitung</a>
 </p>
 
-## Меньше вкладок, больше подходящих предложений
+## Weniger Tabs. Mehr passende Stellen.
 
-| Найти своё | Посмотреть подробнее |
+| Passendes finden | Mehr erfahren |
 | :--- | :--- |
-| **Работа, Praktikum и Ausbildung**<br>Выберите направление, профессию и город. | **Описание рядом с вакансией**<br>Условия, требования и доступные контакты открываются справа. |
-| **Новые предложения при прокрутке**<br>Лента подгружается автоматически. | **Избранное под рукой**<br>Сохраните интересные варианты и вернитесь к ним позже. |
-| **Ваши источники**<br>Выбирайте площадки, на которых хотите искать. | **Оригинал в один клик**<br>Откройте объявление на сайте и откликнитесь работодателю. |
+| **Jobs, Praktikum und Ausbildung**<br>Wähle einen Bereich, einen Beruf und einen Ort. | **Details direkt daneben**<br>Beschreibung, Anforderungen und verfügbare Kontakte öffnen sich rechts. |
+| **Neue Stellen beim Scrollen**<br>Weitere Angebote werden automatisch geladen. | **Favoriten griffbereit**<br>Speichere interessante Stellen und sieh sie dir später wieder an. |
+| **Deine Quellen**<br>Wähle die Portale aus, auf denen du suchen möchtest. | **Zum Original mit einem Klick**<br>Öffne die Anzeige auf der Website und bewirb dich beim Arbeitgeber. |
 
-## Поиск по всей Германии
+## Suche in ganz Deutschland
 
-**21 источник в общей ленте** — среди них BA Jobsuche, Azubiyo, Ausbildung.de, Praktikum.info, Arbeitnow, AUBI-plus и Workwise.
+**21 Quellen in der gemeinsamen Stellenliste** — darunter BA Jobsuche, Azubiyo, Ausbildung.de, Praktikum.info, Arbeitnow, AUBI-plus und Workwise.
 
-Ещё **12 площадок для поиска на их сайтах**, включая StepStone и Indeed. Выбор источников сохраняется между запусками.
+Dazu kommen **12 weitere Portale mit Suche auf ihrer Website**, darunter StepStone und Indeed. Deine Quellenauswahl bleibt beim nächsten Start erhalten.
 
-## Начните с трёх шагов
+## In drei Schritten starten
 
-1. **Скачайте** архив по кнопке выше.
-2. **Распакуйте** его в удобную папку и откройте **JobFinder.exe**.
-3. **Введите профессию и город**, выберите тип предложения и нажмите **«Найти»**.
+1. **Herunterladen:** Nutze den grünen Download-Button oben.
+2. **Entpacken:** Öffne den entpackten Ordner und starte **JobFinder.exe**.
+3. **Suchen:** Gib einen Beruf und einen Ort ein, wähle die Art der Stelle und klicke auf **„Suchen“**.
 
-## Удобно каждый день
+## So, wie es für dich passt
 
-Переключайтесь между тёмной и светлой темой, выбирайте русский или немецкий язык. После поиска форму можно свернуть, чтобы оставить больше места вакансиям.
+Wähle zwischen dunklem und hellem Design. Die App startet auf Deutsch; Russisch ist ebenfalls verfügbar. Nach der Suche kannst du die Suchfelder einklappen, damit mehr Platz für die Stellen bleibt.
 
-Когда доступна новая версия, справа сверху появляется **значок скачивания**. Нажмите его — JobFinder обновится и перезапустится, сохранив избранное и настройки.
+Ein **gelber Punkt am Zahnrad** weist auf ein Problem mit einer Quelle hin. Unter **„Einstellungen → Quellenstatus“** findest du den Grund und kannst die Quelle erneut laden.
+
+Sobald eine neue Version verfügbar ist, erscheint oben rechts ein **Download-Symbol**. Ein Klick aktualisiert JobFinder und startet die App neu. Favoriten und Einstellungen bleiben erhalten.
 
 <br>
 
 <p align="center">
-  <b>Ваш следующий шаг начинается с поиска.</b><br><br>
-  <a href="https://github.com/4ek1st/JobFinder/releases/latest/download/JobFinder-portable-win-x64.zip">Скачать JobFinder</a>
+  <b>Dein nächster Schritt beginnt mit einer Suche.</b><br><br>
+  <a href="https://github.com/4ek1st/JobFinder/releases/latest/download/JobFinder-portable-win-x64.zip">JobFinder herunterladen</a>
 </p>

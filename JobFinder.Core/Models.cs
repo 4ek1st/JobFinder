@@ -55,7 +55,7 @@ public sealed record SavedSearch(string Name, SearchQuery Query);
 public sealed record UserProfile
 {
     public int Schema { get; init; } = 1;
-    public string Language { get; set; } = "ru";
+    public string Language { get; set; } = "de";
     public string Theme { get; set; } = "dark";
     public SearchQuery LastQuery { get; set; } = new();
     public List<string> EnabledSources { get; set; } = SourceCatalog.FeedIds();

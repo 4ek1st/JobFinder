@@ -17,6 +17,7 @@ public partial class App
         logos.Seed(page.Jobs[0].LogoUrl, File.ReadAllBytes(Path.Combine(fixtures, "logo-azubiyo.png")));
         var vm = new ViewModel(Path.Combine(isolated, "compact-profile"), testSources: [new FixtureSource("azubiyo", "Azubiyo", JobKind.Apprenticeship, () => page)], detailService: loader, logos: logos);
         var window = TestWindow(vm); window.AutoLoadEnabled = false;
+        check(vm.Ui.IsDe && vm.Profile.Language == "de", "A fresh application opens in German by default");
         check(window.SearchSurface.IsVisible && !window.CompactSearchBar.IsVisible, "Before a first search, the full search form is available");
         vm.ApplyQuery(new("Fachinformatiker", "Berlin", 25, JobKind.Apprenticeship)); await vm.SearchAsync(); await SettleAsync();
         check(!window.SearchSurface.IsVisible && window.EditSearchButton.IsVisible && window.ResultSourcesButton.IsVisible, "A new search collapses the form while editing and filters remain accessible");

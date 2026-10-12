@@ -12,6 +12,12 @@ async Task<SourceFailure> Fails(Func<Task> action, FailureKind kind)
 }
 try
 {
+    Check(new ProfileStore(Path.Combine(Path.GetTempPath(), "jobfinder-locale-" + Guid.NewGuid().ToString("N"))).Load().Language == "de", "German is the default language for a fresh installation");
+    var languageStore = new ProfileStore(Path.Combine(Path.GetTempPath(), "jobfinder-language-choice-" + Guid.NewGuid().ToString("N")));
+    languageStore.Save(new UserProfile { Language = "ru" });
+    Check(languageStore.Load().Language == "ru", "An existing explicit Russian language choice survives the new German default");
+    languageStore.Save(new UserProfile { Language = "unsupported" });
+    Check(languageStore.Load().Language == "de", "An unsupported saved language falls back to German");
     var azubi = AzubiyoSource.Parse(File.ReadAllText(Path.Combine(fixtures, "azubiyo-filtered.txt")), new("https://www.azubiyo.de/ausbildung/berlin/?subject=Fachinformatiker&location=Berlin&radius=25"));
     Check(azubi.Jobs.Count >= 10 && azubi.Jobs.Any(j => j.Title.Contains("Systemintegration") && j.Company.Contains("Universität Berlin") && j.Location.Contains("Berlin")), "Actual Azubiyo title, company, city parsed");
     Check(azubi.Jobs.Any(j => j.Start == "01.09.2027" && j.Salary.Contains('€')), "Training start and salary preserved separately");
