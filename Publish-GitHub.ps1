@@ -95,17 +95,23 @@ $sumLines = @()
 foreach ($path in @($package,$sourceArchive,$manifestPath,(Join-Path $releaseDirectory 'update-manifest.sig'))) { $sumLines += (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() + '  ' + [IO.Path]::GetFileName($path) }
 $sumLines | Set-Content -LiteralPath (Join-Path $releaseDirectory 'SHA256SUMS.txt') -Encoding utf8
 $notes = @"
-JobFinder $Version for Windows 10/11 x64.
+Работа, практика и Ausbildung в Германии — в одном удобном приложении.
 
-- Unified German work, Praktikum and Ausbildung feed with 21 sources and 12 additional search sites.
-- Background update checks and a download icon in the window caption when a newer version exists.
-- Download progress/cancel, signed package verification, personal-data backup, restart and failure rollback.
-- Russian/German interface, dark/light themes, favorites and automatic vacancy pagination.
+[**Скачать JobFinder для Windows**](https://github.com/$repository/releases/download/v$Version/JobFinder-portable-win-x64.zip)
 
-Extract the portable ZIP to a writable directory and run JobFinder.exe. .NET is included.
-For an existing installation preserve its data folder. In-app internet updates are available from this release onward.
+Windows 10 / 11 · Русский / Deutsch · Без установки
 
-Portable ZIP SHA-256: $packageHash
+- Вакансии из 21 источника в общей ленте и ещё 12 площадок для поиска на их сайтах.
+- Описание выбранной вакансии справа, избранное и ссылка на оригинал.
+- Автоматическая подгрузка предложений при прокрутке.
+- Тёмная и светлая темы.
+- Обновление через значок скачивания справа сверху — с сохранением избранного и настроек.
+
+**Первый запуск:** распакуйте архив в удобную папку и откройте **JobFinder.exe**.
+
+**Уже пользуетесь JobFinder?** Нажмите значок обновления в программе. Если переносите её вручную, сохраните свою папку **data**.
+
+[Подробнее о программе](https://github.com/$repository) · [Как пользоваться](https://github.com/$repository/blob/main/README.ru.md)
 "@
 $notesPath = Join-Path $releaseDirectory 'release-notes.md'
 [IO.File]::WriteAllText($notesPath,$notes,[Text.UTF8Encoding]::new($false))

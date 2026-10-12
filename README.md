@@ -1,46 +1,62 @@
-# JobFinder
+<p align="center">
+  <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/hero.svg" alt="JobFinder — найдите своё место в Германии. Работа, Praktikum и Ausbildung." width="100%">
+</p>
 
-A portable Windows application for finding work, internships (Praktikum) and apprenticeships (Ausbildung) in Germany. Russian and German interface, dark/light themes, a unified vacancy feed, favorites, source-provided company logos and selected-vacancy details.
+<p align="center">
+  Ищите вакансии, сравнивайте предложения и сохраняйте то, что подходит вам.<br>
+  Всё в одном спокойном и понятном интерфейсе.
+</p>
 
-[Download the latest release](https://github.com/4ek1st/JobFinder/releases/latest) · [Russian guide](README.ru.md)
+<p align="center">
+  <a href="https://github.com/4ek1st/JobFinder/releases/latest/download/JobFinder-portable-win-x64.zip">
+    <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/download.svg" alt="Скачать JobFinder для Windows" width="306" height="60">
+  </a>
+  <br><sub>Windows 10 / 11 · Русский / Deutsch · Без установки</sub>
+</p>
 
-## Run
+<p align="center">
+  <a href="https://github.com/4ek1st/JobFinder/releases/latest">Что нового</a> · <a href="README.ru.md">Как пользоваться</a>
+</p>
 
-Extract the portable ZIP into a writable folder and open `JobFinder.exe`. Windows 10/11 x64; no separate .NET installation. Internet is needed for fresh vacancies and update checks. Favorites with loaded descriptions are available offline.
+<br>
 
-## Sources
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/app-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/app-dark.png">
+  <img src="https://raw.githubusercontent.com/4ek1st/JobFinder/main/assets/readme/app-dark.png" alt="JobFinder: список вакансий слева и подробное описание выбранного предложения справа." width="100%">
+</picture>
 
-The directory contains 33 portals: 21 sources integrated into the common feed and 12 external searches. It supports source-name/category search, filters, individually saved choices and bulk changes limited to the filtered set.
+<br>
 
-Integrated: Arbeitnow, Praktikum.info, Azubiyo, BA Jobsuche, Ausbildung.de, AUBI-plus, Meine Ausbildung (IHK), Lehrstellenradar, MeinPraktikum.de, Absolventa, Jobmensa, UNICUM Karriere, Workwise, INTERAMT, published bund.de RSS, Jobware, stellenanzeigen.de, stellenwerk, Berufsstart, Azubi.de and Karriereportal Berlin.
+## Меньше вкладок, больше подходящих предложений
 
-Sources have different geographic and full-text coverage. Lehrstellenradar requires a five-digit postal code; stellenanzeigen.de requires a city. Some sources match locally on loaded pages rather than a metric radius. The source directory explains these boundaries and failures. External portals including StepStone/Indeed open in the browser. Counts are loaded matches rather than every vacancy in Germany. Access restrictions are not bypassed.
+| Найти своё | Посмотреть подробнее |
+| :--- | :--- |
+| **Работа, Praktikum и Ausbildung**<br>Выберите направление, профессию и город. | **Описание рядом с вакансией**<br>Условия, требования и доступные контакты открываются справа. |
+| **Новые предложения при прокрутке**<br>Лента подгружается автоматически. | **Избранное под рукой**<br>Сохраните интересные варианты и вернитесь к ним позже. |
+| **Ваши источники**<br>Выбирайте площадки, на которых хотите искать. | **Оригинал в один клик**<br>Откройте объявление на сайте и откликнитесь работодателю. |
 
-## Updates
+## Поиск по всей Германии
 
-The application checks stable GitHub Releases in the background. A download icon appears before Minimize in the top-right window caption only for a newer version. Click to download and update; clicking the progress action cancels a download. The app saves local state, validates a signed release manifest and package hashes, keeps backups, installs and restarts. Failed installation/startup restores the previous version. About provides a manual check.
+**21 источник в общей ленте** — среди них BA Jobsuche, Azubiyo, Ausbildung.de, Praktikum.info, Arbeitnow, AUBI-plus и Workwise.
 
-`data` beside the executable contains preferences, favorites and saved searches. Keep it when moving the application. It is not included in release packages or this repository. No GitHub account or access token is required by the application.
+Ещё **12 площадок для поиска на их сайтах**, включая StepStone и Indeed. Выбор источников сохраняется между запусками.
 
-## Build and verify
+## Начните с трёх шагов
 
-Use .NET SDK 10 on Windows:
+1. **Скачайте** архив по кнопке выше.
+2. **Распакуйте** его в удобную папку и откройте **JobFinder.exe**.
+3. **Введите профессию и город**, выберите тип предложения и нажмите **«Найти»**.
 
-```powershell
-pwsh -NoProfile -File ./Build.ps1
-pwsh -NoProfile -File ./Build.ps1 -Verify
-```
+## Удобно каждый день
 
-`-Verify` obtains public control fixtures, runs source/updater checks and verifies actual WPF trees. Extended historical source fixtures are optional and not committed. Automated rendering and routed-control tests do not claim physical monitor DPI changes or mouse/keyboard input.
+Переключайтесь между тёмной и светлой темой, выбирайте русский или немецкий язык. После поиска форму можно свернуть, чтобы оставить больше места вакансиям.
 
-## Publishing future releases
+Когда доступна новая версия, справа сверху появляется **значок скачивания**. Нажмите его — JobFinder обновится и перезапустится, сохранив избранное и настройки.
 
-Update the version in `JobFinder/JobFinder.csproj`, verify the build and commit the reviewed changes. The repository owner runs:
+<br>
 
-```powershell
-pwsh -NoProfile -File ./Publish-GitHub.ps1 -Version 0.5.2
-```
-
-Use a new version for every release. The publisher packages the application/source, signs update metadata, uploads a draft, verifies its assets and publishes it as the stable latest release. The author's Windows-DPAPI signing key is stored outside this repository. Keep it with the publishing Windows account; never replace or upload it. Only its public verification key is in the application. A signing-key mismatch stops publication.
-
-Third-party licenses and Fluent system-icon attribution are in `THIRD-PARTY-NOTICES`.
+<p align="center">
+  <b>Ваш следующий шаг начинается с поиска.</b><br><br>
+  <a href="https://github.com/4ek1st/JobFinder/releases/latest/download/JobFinder-portable-win-x64.zip">Скачать JobFinder</a>
+</p>

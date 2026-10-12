@@ -3,6 +3,10 @@
 !/.gitattributes
 !/README.md
 !/README.ru.md
+!/assets/
+!/assets/readme/
+!/assets/readme/*.svg
+!/assets/readme/*.png
 !/CHANGELOG.md
 !/Build.ps1
 !/Fetch-Fixtures.ps1
