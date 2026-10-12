@@ -244,7 +244,8 @@ public sealed class UpdateClient : IUpdateService, IDisposable
         if (!target.IsAbsoluteUri || target.Scheme != Uri.UriSchemeHttps || !target.IsDefaultPort || target.UserInfo.Length != 0 || target.Fragment.Length != 0)
             throw new UpdateFailure(UpdateFailureKind.Verification, "Unsafe update redirect");
         if (target.AbsoluteUri == original.AbsoluteUri) return;
-        if (!metadata && target.Host is "release-assets.githubusercontent.com" or "objects.githubusercontent.com" && target.AbsolutePath.StartsWith("/github-production-release-asset-2e65be/", StringComparison.Ordinal)) return;
+        if (!metadata && target.Host is ("release-assets.githubusercontent.com" or "objects.githubusercontent.com") &&
+            (target.AbsolutePath.StartsWith("/github-production-release-asset-2e65be/", StringComparison.Ordinal) || target.AbsolutePath.StartsWith("/github-production-release-asset/", StringComparison.Ordinal))) return;
         throw new UpdateFailure(UpdateFailureKind.Verification, "Update redirect is outside the selected GitHub release");
     }
 

@@ -28,7 +28,7 @@ public partial class App
         MainWindow = window; ShutdownMode = ShutdownMode.OnMainWindowClose; window.Show(); await vm.SearchAsync();
         vm.ShowFavorites = true; vm.Sort = 1; vm.Keyword = "Design draft retained"; vm.City = "Hamburg"; vm.SearchExpanded = true;
         await vm.Updates.StartAsync();
-        if (!vm.Updates.ShowCaption || vm.Updates.Available?.Version != new Version(0, 5, 0, 0)) throw new InvalidOperationException("The real public 0.5.0 release was not offered.");
+        if (!vm.Updates.ShowCaption || vm.Updates.Available?.Version <= vm.Updates.CurrentVersion) throw new InvalidOperationException("A real newer public release was not offered: " + vm.Updates.Status);
         await window.Dispatcher.InvokeAsync(() => { }, DispatcherPriority.ApplicationIdle); window.UpdateLayout();
         var button = Descendants(window).OfType<Button>().Single(control => control.Name == "UpdateCaptionAction");
         if (!button.IsVisible || !button.IsEnabled || button.Command != vm.Updates.CaptionCommand) throw new InvalidOperationException("The actual caption action is not available.");

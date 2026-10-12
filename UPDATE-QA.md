@@ -1,10 +1,10 @@
-# JobFinder 0.5.0 update verification
+# JobFinder 0.5.1 update verification
 
 The release adds a public GitHub update feed, a caption download action and a transactional installer. Existing job sources and personal data remain covered by regression checks.
 
 ## Controlled verification
 
-- Core: 388 passing checks (188 source/persistence regressions, 125 update-client checks, 75 installer checks).
+- Core: 391 passing checks (188 source/persistence regressions, 128 update-client checks, 75 installer checks).
 - WPF: 153 passing checks, including 54 update-specific checks. Actual controls and bound commands cover themes, RU/DE, progress/cancel/retry, About checks, startup/check overlap, save failure, owned-stage cleanup, restart snapshots and rollback messaging.
 - Real NTFS junctions, locked files, competing locks and disposable native processes are included. Most installer outcomes use an injected process host to make failures repeatable.
 - DE-to-RU toolbar clipping was reproduced and corrected without changing ordinary button sizes/styles.
@@ -14,7 +14,7 @@ Portable reports and selected WPF renders are in `verification`. Offers/progress
 
 ## Real public update proof
 
-The first public stable release is v0.5.0. A real 0.4.1 bootstrap was built solely for isolated verification. After publication, `--verify-github-update` in an empty isolated installation exercises the production anonymous client, actual caption command, hidden helper, replacement EXE and new visible WPF window acknowledgement. The proof compares favorites, saved searches, applied query, separate draft, source choices, language/theme and window bounds. It never reads the user's profile.
+The first usable stable update release is v0.5.1; the initial v0.5.0 internet proof exposed a current CDN path mismatch before user installation. A real 0.4.1 bootstrap was built solely for isolated verification. After publication, `--verify-github-update` in an empty isolated installation exercises the production anonymous client, actual caption command, hidden helper, replacement EXE and new visible WPF window acknowledgement. The proof compares favorites, saved searches, applied query, separate draft, source choices, language/theme and window bounds. It never reads the user's profile.
 
 At this initial source snapshot the remote proof is pending publication. The completed, sanitized result will be attached to the release and this document updated on main. No simulated transport or invented public version is treated as an Internet update.
 

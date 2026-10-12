@@ -1,3 +1,9 @@
+# JobFinder 0.5.1 — 2026-10-12
+
+- Fixed the production GitHub CDN path `/github-production-release-asset/`, discovered during the anonymous public update proof. The older CDN format remains supported; HTTPS host, signed metadata, length and hashes remain enforced.
+- Corrected draft release read-back for GitHub temporary `untagged` URLs, with final canonical URL checks after publication and safe resume limited to unpublished drafts.
+- Supersedes 0.5.0. Use this version for the first installation with internet updates; 0.5.0's restrictive client can reject current CDN redirects.
+
 # JobFinder 0.5.0 — 2026-10-12
 
 - Public source and portable releases at github.com/4ek1st/JobFinder. No GitHub login is needed to check or download updates.

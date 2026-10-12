@@ -38,7 +38,7 @@ pwsh -NoProfile -File ./Build.ps1 -Verify
 Update the version in `JobFinder/JobFinder.csproj`, verify the build and commit the reviewed changes. The repository owner runs:
 
 ```powershell
-pwsh -NoProfile -File ./Publish-GitHub.ps1 -Version 0.5.1
+pwsh -NoProfile -File ./Publish-GitHub.ps1 -Version 0.5.2
 ```
 
 Use a new version for every release. The publisher packages the application/source, signs update metadata, uploads a draft, verifies its assets and publishes it as the stable latest release. The author's Windows-DPAPI signing key is stored outside this repository. Keep it with the publishing Windows account; never replace or upload it. Only its public verification key is in the application. A signing-key mismatch stops publication.

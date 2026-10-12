@@ -312,8 +312,9 @@ public static class UpdateClientVerification
         using (var client = new UpdateClient(http, publicKey))
             check((await FailureAsync(() => client.CheckAsync(new Version(0, 4, 1))))?.Kind == UpdateFailureKind.Verification && handler.Requests.Length == 1, "Updater rejects metadata redirect to a foreign repository");
         foreach (var host in new[] { "release-assets.githubusercontent.com", "objects.githubusercontent.com" })
+        foreach (var prefix in new[] { "/github-production-release-asset-2e65be/", "/github-production-release-asset/" })
         {
-            var cdn = "https://" + host + "/github-production-release-asset-2e65be/1/file?response-content-type=application%2Foctet-stream";
+            var cdn = "https://" + host + prefix + "1416029797/file?response-content-type=application%2Foctet-stream";
             using var handler = new Handler(r => r.RequestUri!.AbsoluteUri == AssetUrl("v0.5.0", UpdateProduct.ManifestName) ? Redirect(cdn) : r.RequestUri!.AbsoluteUri == cdn ? Response(signed.Bytes) : Reply(r, signed));
             using var http = new HttpClient(handler); using var client = new UpdateClient(http, publicKey);
             check((await client.CheckAsync(new Version(0, 4, 1)))?.Version == new Version(0, 5, 0, 0) && handler.Requests.Length == 4 && handler.AnonymousHeaders, "Updater follows authenticated-by-signature release redirect to " + host);
@@ -487,13 +488,16 @@ public static class UpdateClientVerification
                 var failure = await FailureAsync(() => client.DownloadAsync(available, path));
                 check(failure?.Kind == UpdateFailureKind.RateLimit && failure.RetryAt == first?.RetryAt && handler.Requests.Length == 1 && Clean(path), "Updater package retry shares feed rate-limit cooldown");
             }
-            var cdn = "https://release-assets.githubusercontent.com/github-production-release-asset-2e65be/1/package";
+            foreach (var prefix in new[] { "/github-production-release-asset-2e65be/", "/github-production-release-asset/" })
+            {
+            var cdn = "https://release-assets.githubusercontent.com" + prefix + "1416029797/package";
             using (var handler = new Handler(r => r.RequestUri!.AbsoluteUri == available.PackageUrl ? Redirect(cdn) : Response(signed.Package)))
             using (var http = new HttpClient(handler))
             using (var client = new UpdateClient(http, publicKey))
             {
-                var path = PathFor("cdn-package");
+                var path = PathFor("cdn-package-" + (prefix.Contains("2e65be") ? "legacy" : "current"));
                 check(await client.DownloadAsync(available, path) == path && File.Exists(path) && handler.Requests.SequenceEqual(new[] { available.PackageUrl, cdn }), "Updater downloads verified package through inspected HTTPS GitHub release CDN redirect");
+            }
             }
         }
         finally
